@@ -1,9 +1,12 @@
+<%@ page import="java.sql.*, com.DB.DBConnect" %>
 <%@page import="com.entity.User"%>
 <%@page import="com.entity.BookDtls"%>
 <%@page import="java.util.List"%>
 <%@page import="com.DAO.BookDAOImpl"%>
 <%@page import="java.sql.Connection"%>
+<%@ page import="java.sql.*" %>
 <%@page import="com.DB.DBConnect"%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -39,6 +42,11 @@
 	<div class="container-fluid back-img">
 		<h2 class="text-center text-success">EBook Management System</h2>
 	</div>
+	
+	<%
+    Connection conn = DBConnect.getConn();
+    out.println(conn != null ? "Connected" : "Connection failed");
+%>
 	
 	<!-- Start Recent Book -->
 	<div class="container">

@@ -12,10 +12,12 @@ public class User {
 	private String city;
 	private String state;
 	private String pincode;
+	private boolean verified;
+	private String verificationToken;
 
 	public User() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public int getId() {
@@ -104,5 +106,21 @@ public class User {
 				+ ", address=" + address + ", landmark=" + landmark + ", city=" + city + ", state=" + state
 				+ ", pincode=" + pincode + "]";
 	}
+
+	public void setVerified(boolean b) {
+		this.verified = verified;
+	}
+
+	public void setVerificationToken(String verificationToken) {
+		this.verificationToken = verificationToken;
+		}
+
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public String getVerificationToken() {
+		return verificationToken;
+		}
 
 }  

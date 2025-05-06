@@ -14,7 +14,6 @@ public class BookDtls {
 
 	public BookDtls() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public BookDtls(String bookName, String author, String price, String bookCategory, String status, String photoName,

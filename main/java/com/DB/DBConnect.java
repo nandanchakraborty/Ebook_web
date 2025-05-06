@@ -10,11 +10,8 @@ public class DBConnect {
 	public static Connection getConn() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ebook_app", "root", "password");
-			System.out.println("connected");
-			System.out.println("connected");
-			System.out.println("connected");
-			System.out.println("connected");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ebook_web", "root", "password");
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
