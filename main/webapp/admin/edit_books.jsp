@@ -1,5 +1,6 @@
 <%@page import="com.entity.Category"%>
 <%@page import="java.util.List"%>
+<%@page import="com.entity.BookDtls"%>
 <%@page import="com.DB.DBConnect"%>
 <%@page import="com.DAO.BookDAOImpl"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -15,57 +16,53 @@
 </head>
 <body style="background-color: #f0f2f2;">
 	<%@include file="navbar.jsp"%>
-	
 	<div class="caontainer">
 		<div class="row">
 			<div class="col-md-4 offset-md-4">
 				<div class="card">
 					<div class="card-body">
-						<h4 class="text-center">Add Books</h4>
-
-						<c:if test="${not empty succMsg }">
-							<p class="text-center text-success">${succMsg }</p>
-							<c:remove var="succMsg" scope="session" />
-						</c:if>
-
-						<c:if test="${not empty failedMsg }">
-							<p class="text-center text-danger">${failedMsg }</p>
-							<c:remove var="failedMsg" scope="session" />
-						</c:if>
+						<h4 class="text-center">Edit Books</h4>
 
 
-						<form action="../add_books" method="post"
-							enctype="multipart/form-data">
+						<%
+						int id = Integer.parseInt(request.getParameter("id"));
+						BookDAOImpl dao = new BookDAOImpl(DBConnect.getConn());
+						BookDtls b = dao.getBookById(id);
+						%>
 
+						<form action="../editbooks" method="post">
+							<input type="hidden" name="id" value="<%=b.getBookId()%>">
 							<div class="form-group">
 								<label for="exampleInputEmail1">Book Name*</label> <input
 									name="bname" type="text" class="form-control"
-									id="exampleInputEmail1" aria-describedby="emailHelp">
+									id="exampleInputEmail1" aria-describedby="emailHelp"
+									value="<%=b.getBookName()%>">
 							</div>
 							<div class="form-group">
 								<label for="exampleInputEmail1">Author Name*</label> <input
 									name="author" type="text" class="form-control"
-									id="exampleInputEmail1" aria-describedby="emailHelp">
+									id="exampleInputEmail1" aria-describedby="emailHelp"
+									value="<%=b.getAuthor()%>">
 							</div>
-							
+
 							<div class="form-group">
 								<label for="exampleInputEmail1">ISBN Number*</label> <input
 									name="isbn" type="text" class="form-control"
-									id="exampleInputEmail1" aria-describedby="emailHelp">
+									value="<%=b.getIsbn()%>">
 							</div>
 
 							<div class="form-group">
 								<label for="exampleInputPassword1">Price*</label> <input
 									name="price" type="number" class="form-control"
-									id="exampleInputPassword1">
+									id="exampleInputPassword1" value="<%=b.getPrice()%>">
 							</div>
+
 
 							<div class="form-group">
 								<label for="inputState">Book Categories</label> <select
 									id="inputState" name="categories" class="form-control">
-									<option selected>--select--</option>
+									<option><%=b.getBookCategory()%></option>
 									<%
-									BookDAOImpl dao = new BookDAOImpl(DBConnect.getConn());
 									List<Category> list = dao.getAllCategory();
 									for (Category c : list) {
 									%>
@@ -80,20 +77,22 @@
 							<div class="form-group">
 								<label for="inputState">Book Status</label> <select
 									id="inputState" name="status" class="form-control">
-									<option selected>--select--</option>
+									<%
+									if ("Active".equals(b.getStatus())) {
+									%>
 									<option value="Active">Active</option>
 									<option value="Inactive">Inactive</option>
+									<%
+									} else {
+									%>
+									<option value="Inactive">Inactive</option>
+									<option value="Active">Active</option>
+									<%
+									}
+									%>
 								</select>
 							</div>
-
-							<div class="form-group">
-								<label for="exampleFormControlFile1">Upload Photo</label> <input
-									name="bimg" type="file" class="form-control-file"
-									id="exampleFormControlFile1">
-							</div>
-
-
-							<button type="submit" class="btn btn-primary">Add</button>
+							<button type="submit" class="btn btn-primary">Update</button>
 						</form>
 
 					</div>

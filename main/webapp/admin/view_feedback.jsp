@@ -1,3 +1,8 @@
+<%@page import="com.entity.User"%>
+<%@page import="com.DAO.BookDAO"%>
+<%@page import="com.DAO.UserDAOImpl"%>
+<%@page import="com.DAO.UserDAO"%>
+<%@page import="com.entity.Feedback"%>
 <%@page import="com.entity.BookDtls"%>
 <%@page import="java.util.List"%>
 <%@page import="com.DB.DBConnect"%>
@@ -10,14 +15,16 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Admin: All Books</title>
+<title>Admin: All Feedback</title>
 <%@include file="allCss.jsp"%>
 </head>
 <body>
 	<%@include file="navbar.jsp"%>
-	
+	<c:if test="${empty userobj}">
+		<c:redirect url="../login.jsp" />
+	</c:if>
 
-	<h3 class="text-center">Hello Admin</h3>
+	<h3 class="text-center">All Review</h3>
 
 	<c:if test="${not empty succMsg }">
 		<h5 class="text-center text-success">${succMsg }</h5>
@@ -35,35 +42,35 @@
 					<th scope="col">ID</th>
 					<th scope="col">Image</th>
 					<th scope="col">Book Name</th>
-					<th scope="col">Author</th>
-					<th scope="col">ISBN No</th>
-					<th scope="col">Price</th>
-					<th scope="col">Categories</th>
-					<th scope="col">Status</th>
-					<th scope="col">Action</th>
+					<th scope="col">User Name</th>
+					<th scope="col">Review</th>
 				</tr>
 			</thead>
 			<tbody>
 				<%
+				int id = Integer.parseInt(request.getParameter("id"));
 				BookDAOImpl dao = new BookDAOImpl(DBConnect.getConn());
-				List<BookDtls> list = dao.getAllBooks();
-				for (BookDtls b : list) {
+
+				List<Feedback> list = dao.getAllFeedbackByBook(id);
+
+				UserDAO dao2 = new UserDAOImpl(DBConnect.getConn());
+				BookDAO dao3 = new BookDAOImpl(DBConnect.getConn());
+
+				int i = 0;
+
+				for (Feedback f : list) {
+					User user = dao2.getUserById(f.getUserId());
+					BookDtls book = dao3.getBookById(f.getBookId());
+					i++;
 				%>
 				<tr>
-					<td><%=b.getBookId()%></td>
-					<td><img src="../book/<%=b.getPhotoName()%>"
+					<td><%=i%></td>
+					<td><img src="../book/<%=book.getPhotoName()%>"
 						style="width: 50px; height: 50Px;"></td>
-					<td><%=b.getBookName()%></td>
-					<td><%=b.getAuthor()%></td>
-					<td><%=b.getIsbn()%></td>
-					<td><%=b.getPrice()%></td>
-					<td><%=b.getBookCategory()%></td>
-					<td><%=b.getStatus()%></td>
-					<td><a href="edit_books.jsp?id=<%=b.getBookId()%>"
-						class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>
-							Edit</a> <a href="../delete?id=<%=b.getBookId()%>"
-						class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i>
-							Delete</a></td>
+					<td><%=book.getBookName()%></td>
+					<td><%=user.getName()%></td>
+					<td><%=f.getComment()%></td>
+
 				</tr>
 				<%
 				}

@@ -107,7 +107,7 @@ public class User {
 				+ ", pincode=" + pincode + "]";
 	}
 
-	public void setVerified(boolean b) {
+	public void setVerified(boolean b, boolean verified) {
 		this.verified = verified;
 	}
 

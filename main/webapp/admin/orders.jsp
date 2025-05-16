@@ -15,9 +15,7 @@
 <%@include file="allCss.jsp"%>
 </head>
 <body>
-	<c:if test="${empty userobj}">
-		<c:redirect url="../login.jsp" />
-	</c:if>
+	
 	<%@include file="navbar.jsp"%>
 	<h3 class="text-center">Orders</h3>
 	<c:if test="${not empty succMsg }">

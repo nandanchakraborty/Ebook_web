@@ -1,8 +1,12 @@
-package com.admin.servlet;
-
-import java.io.File;
+package com.user.servlet;
 
 import java.io.IOException;
+
+import com.DAO.BookDAOImpl;
+import com.DB.DBConnect;
+import com.entity.BookDtls;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,13 +16,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
-import com.DAO.BookDAOImpl;
-import com.DB.DBConnect;
-import com.entity.BookDtls;
-
-@WebServlet("/add_books")
+@WebServlet("/add_old_book")
 @MultipartConfig
-public class BooksAdd extends HttpServlet {
+public class AddOldBook extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,12 +26,14 @@ public class BooksAdd extends HttpServlet {
 			String bookName = req.getParameter("bname");
 			String author = req.getParameter("author");
 			String price = req.getParameter("price");
-			String categories = req.getParameter("categories");
-			String status = req.getParameter("status");
+			String categories = "Old";
+			String status = "Active";
 			Part part = req.getPart("bimg");
 			String fileName = part.getSubmittedFileName();
 			String isbn = req.getParameter("isbn");
-			BookDtls b = new BookDtls(bookName, author, price, categories, status, fileName, "admin", isbn);
+			String useremail = req.getParameter("user");
+
+			BookDtls b = new BookDtls(bookName, author, price, categories, status, fileName, useremail, isbn);
 
 			BookDAOImpl dao = new BookDAOImpl(DBConnect.getConn());
 
@@ -42,18 +44,17 @@ public class BooksAdd extends HttpServlet {
 			if (f) {
 
 				String path = getServletContext().getRealPath("") + "book";
-				System.out.println(path);
-				System.out.println();
+
 				File file = new File(path);
 
 				part.write(path + File.separator + fileName);
 
 				session.setAttribute("succMsg", "Book Add Sucessfully");
-				resp.sendRedirect("admin/add_books.jsp");
+				resp.sendRedirect("sell_book.jsp");
 
 			} else {
 				session.setAttribute("failedMsg", "Something wrong on Server");
-				resp.sendRedirect("admin/add_books.jsp");
+				resp.sendRedirect("sell_book.jsp");
 			}
 
 		} catch (Exception e) {

@@ -26,9 +26,7 @@ a:hover {
 <body style="background-color: #f0f1f2;">
 	<%@include file="navbar.jsp"%>
 
-	<c:if test="${empty userobj}">
-		<c:redirect url="../login.jsp" />
-	</c:if>
+	
 
 	<div class="container">
 		<c:if test="${not empty failedMsg }">
