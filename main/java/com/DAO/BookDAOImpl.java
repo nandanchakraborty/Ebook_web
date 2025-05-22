@@ -449,7 +449,7 @@ public class BookDAOImpl implements BookDAO {
 		Feedback f = null;
 		try {
 
-			String sql = "select * from feedback where bookId=? order by id desc";
+			String sql = "select * from feedback where bookId=? order by userid desc";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookId);
 			ResultSet rs = ps.executeQuery();

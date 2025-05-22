@@ -1,11 +1,11 @@
 package com.user.servlet;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.DAO.BookDAOImpl;
 import com.DB.DBConnect;
 import com.entity.BookDtls;
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -20,46 +20,57 @@ import jakarta.servlet.http.Part;
 @MultipartConfig
 public class AddOldBook extends HttpServlet {
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		try {
-			String bookName = req.getParameter("bname");
-			String author = req.getParameter("author");
-			String price = req.getParameter("price");
-			String categories = "Old";
-			String status = "Active";
-			Part part = req.getPart("bimg");
-			String fileName = part.getSubmittedFileName();
-			String isbn = req.getParameter("isbn");
-			String useremail = req.getParameter("user");
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            // Get form data
+            String bookName = req.getParameter("bname");
+            String author = req.getParameter("author");
+            String price = req.getParameter("price");
+            String isbn = req.getParameter("isbn");
+            String userEmail = req.getParameter("user");
 
-			BookDtls b = new BookDtls(bookName, author, price, categories, status, fileName, useremail, isbn);
+            String categories = "Old";
+            String status = "Active";
 
-			BookDAOImpl dao = new BookDAOImpl(DBConnect.getConn());
+            // Get uploaded file
+            Part part = req.getPart("bimg");
+            String fileName = part.getSubmittedFileName();
 
-			boolean f = dao.addBooks(b);
+            // Create Book object
+            BookDtls book = new BookDtls(bookName, author, price, categories, status, fileName, userEmail, isbn);
 
-			HttpSession session = req.getSession();
+            // Save to database
+            BookDAOImpl dao = new BookDAOImpl(DBConnect.getConn());
+            boolean success = dao.addBooks(book);
 
-			if (f) {
+            // Prepare session for feedback
+            HttpSession session = req.getSession();
 
-				String path = getServletContext().getRealPath("") + "book";
+            if (success) {
+                // File upload path
+                String path = getServletContext().getRealPath("") + File.separator + "book";
 
-				File file = new File(path);
+                // Create folder if not exists
+                File uploadDir = new File(path);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
 
-				part.write(path + File.separator + fileName);
+                // Save the file
+                part.write(path + File.separator + fileName);
 
-				session.setAttribute("succMsg", "Book Add Sucessfully");
-				resp.sendRedirect("sell_book.jsp");
+                session.setAttribute("succMsg", "Book added successfully.");
+            } else {
+                session.setAttribute("failedMsg", "Something went wrong on the server.");
+            }
 
-			} else {
-				session.setAttribute("failedMsg", "Something wrong on Server");
-				resp.sendRedirect("sell_book.jsp");
-			}
+            resp.sendRedirect("sell_book.jsp");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.getSession().setAttribute("failedMsg", "Exception: " + e.getMessage());
+            resp.sendRedirect("sell_book.jsp");
+        }
+    }
 }

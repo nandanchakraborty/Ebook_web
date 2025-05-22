@@ -18,7 +18,7 @@
 				</div>
 				<h3>24*7 Service</h3>
 				<h4>Help Line Number</h4>
-				<h5>+0671 869899023</h5>
+				<h5>123456789</h5>
 				<a href="index.jsp" class="btn btn-primary">Home</a>
 			</div>
 

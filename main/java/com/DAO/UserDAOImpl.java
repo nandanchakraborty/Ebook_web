@@ -15,18 +15,17 @@ public class UserDAOImpl implements UserDAO {
         this.conn = conn;
     }
 
-    // User Registration
+    // User Registration (with OTP - no token)
     public boolean userRegister(User us) {
         try {
-            String sql = "INSERT INTO user(name, email, phno, password, verified, verification_token) VALUES(?,?,?,?,?,?)";
+            String sql = "INSERT INTO user(name, email, phno, password, verified) VALUES(?,?,?,?,?)";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, us.getName());
             ps.setString(2, us.getEmail());
             ps.setString(3, us.getPhno());
             ps.setString(4, us.getPassword());
             ps.setBoolean(5, us.isVerified());
-            ps.setString(6, us.getVerificationToken());
-            
+
             int i = ps.executeUpdate();
             return i > 0;
         } catch (SQLException e) {
@@ -143,110 +142,80 @@ public class UserDAOImpl implements UserDAO {
         return f;
     }
 
-    // Update user verified status after verification
-    public boolean updateUser(User user) {
-        boolean result = false;
-        try {
-            String sql = "UPDATE user SET verified = ?, verification_token = NULL WHERE email = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setBoolean(1, user.isVerified());  // Set the verified status to true
-            ps.setString(2, user.getEmail());     // Use email to identify the user
-
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected > 0) {
-                result = true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    // Verify user through verification token
-    public boolean verifyUser(String token) {
-        try {
-            String checkSql = "SELECT id FROM user WHERE verification_token = ? AND verified = false";
-            PreparedStatement checkPs = conn.prepareStatement(checkSql);
-            checkPs.setString(1, token);
-            ResultSet rs = checkPs.executeQuery();
-
-            if (rs.next()) {
-                String updateSql = "UPDATE user SET verified = true, verification_token = NULL WHERE verification_token = ?";
-                PreparedStatement updatePs = conn.prepareStatement(updateSql);
-                updatePs.setString(1, token);
-                int updated = updatePs.executeUpdate();
-                return updated > 0;
-            }
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    // No longer needed unless you plan to use token-based verification
+    // Removed updateUser() and verifyUser()
 
     public boolean saveFeedback(Feedback f) {
-    	boolean fa = false;
-		try {
-			String sql = "insert into feedback(bookId,userId,comment) values(?,?,?)";
+        boolean fa = false;
+        try {
+            String sql = "insert into feedback(bookId,userId,comment) values(?,?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, f.getBookId());
+            ps.setInt(2, f.getUserId());
+            ps.setString(3, f.getComment());
 
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, f.getBookId());
-			ps.setInt(2, f.getUserId());
-			ps.setString(3, f.getComment());
-
-			int i = ps.executeUpdate();
-
-			if (i == 1) {
-				fa = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return fa;
+            int i = ps.executeUpdate();
+            if (i == 1) {
+                fa = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fa;
     }
 
-    // Get user by ID (not implemented yet)
+    // Get user by ID
     public User getUserById(int uid) {
-    	User us = null;
+        User us = null;
+        try {
+            String sql = "select * from user where id=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, uid);
 
-		try {
-			String sql = "select * from user where id=?";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, uid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                us = new User();
+                us.setId(rs.getInt(1));
+                us.setName(rs.getString(2));
+                us.setEmail(rs.getString(3));
+                us.setPhno(rs.getString(4));
+                us.setPassword(rs.getString(5));
+            }
 
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				us = new User();
-				us.setId(rs.getInt(1));
-				us.setName(rs.getString(2));
-				us.setEmail(rs.getString(3));
-				us.setPhno(rs.getString(4));
-				us.setPassword(rs.getString(5));
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return us;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return us;
     }
 
-	public boolean forgotPassword(String email, String phno, String password) {
-		boolean f = false;
-		try {
-			String sql = "update user set password=? where email=? and phno=?";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, password);
-			ps.setString(2, email);
-			ps.setString(3, phno);
+    public boolean forgotPassword(String email, String phno, String password) {
+        boolean f = false;
+        try {
+            String sql = "update user set password=? where email=? and phno=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, password);
+            ps.setString(2, email);
+            ps.setString(3, phno);
 
-			int i = ps.executeUpdate();
-			if (i == 1) {
-				f = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return f;
+            int i = ps.executeUpdate();
+            if (i == 1) {
+                f = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return f;
+    }
+
+	@Override
+	public boolean updateUser(User us) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean verifyUser(String token) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

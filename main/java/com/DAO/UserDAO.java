@@ -5,20 +5,36 @@ import com.entity.User;
 
 public interface UserDAO {
 
-	public boolean userRegister(User us);
+    // Registration
+    public boolean userRegister(User us);
 
-	public User login(String email, String password);
+    // Login
+    public User login(String email, String password);
 
-	public boolean checkPassword(int id, String ps);
+    // Profile update
+    public boolean updateProfile(User us);
 
-	public boolean updateProfile(User us);
+    // Check if user exists by email
+    public boolean checkUser(String em);
 
-	public boolean checkUser(String em);
+    // Password verification for reset
+    public boolean checkPasswordAuthen(String email, String phno);
 
-	public boolean checkPasswordAuthen(String email, String phno);
+    // Password check by user ID
+    public boolean checkPassword(int id, String ps);
 
-	public boolean saveFeedback(Feedback f);
+    // Save feedback
+    public boolean saveFeedback(Feedback f);
 
-	public User getUserById(int uid);
-	
+    // Get user by ID
+    public User getUserById(int uid);
+
+    // Forgot password update
+    public boolean forgotPassword(String email, String phno, String password);
+
+    // Update user's verification status (set verified = true and clear token)
+    public boolean updateUser(User us);
+
+    // Verify user using token
+    public boolean verifyUser(String token);
 }

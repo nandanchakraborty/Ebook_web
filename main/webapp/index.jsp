@@ -45,7 +45,6 @@
 	
 	<%
     Connection conn = DBConnect.getConn();
-    out.println(conn != null ? "Connected" : "Connection failed");
 %>
 	
 	<!-- Start Recent Book -->

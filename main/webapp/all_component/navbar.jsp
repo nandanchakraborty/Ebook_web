@@ -87,30 +87,6 @@
 				href="all_recent_book.jsp"><i class="fas fa-book-open"></i>
 					Recent Book</a></li> -->
 
-			<li class="nav-item dropdown"><a
-				class="nav-link active dropdown-toggle" href="#" id="navbarDropdown"
-				role="button" data-toggle="dropdown" aria-haspopup="true"
-				aria-expanded="false"> Categories </a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item"
-						href="all_recent_book.jsp">All</a>
-					
-					<%
-					BookDAOImpl daox = new BookDAOImpl(DBConnect.getConn());
-					List<Category> listx = daox.getAllCategory();
-					for (Category c : listx) {
-					%>
-					<a class="dropdown-item"
-						href="catogory_book.jsp?ca=<%=c.getCategoryName()%>"><%=c.getCategoryName()%></a>
-					<%
-					}
-					%>
-
-				</div></li>
-
-			<li class="nav-item active"><a class="nav-link disabled"
-				href="all_old_book.jsp"><i class="fas fa-book-open"></i> Old
-					Book</a></li>
 		</ul>
 		<form class="form-inline my-2 my-lg-0">
 			<a href="setting.jsp" class="btn btn-light my-2 my-sm-0"
